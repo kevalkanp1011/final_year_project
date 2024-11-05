@@ -20,7 +20,7 @@ b = optimalParams(2);
 fprintf('Regressed parameter a: %.2f\n', a);
 fprintf('Regressed parameter b: %.2f\n', b);
 
-[~,Xpred] = objfun(optimalParams, Xexp, T, Hfus, Tfus, R);
+[~,Xpred, ln_gamma2] = objfun(optimalParams, Xexp, T, Hfus, Tfus, R);
 fprintf('X pred is: %.2f\n', Xpred);
 fprintf('S percent is: %.2f\n', calculate_S(Xexp, Xpred));
 
@@ -29,6 +29,21 @@ T_plot = 273.15:0.1:343.15; % Temperature range in Kelvin
 
 
 % Plotting
+figure;
+plot(T, ln_gamma2, 'b--', 'LineWidth', 1.5, 'DisplayName', 'Predicted Solubility');
+hold on
+scatter(T, ln_gamma2, 'filled', 'MarkerFaceColor', 'r', 'DisplayName', 'Experimental Solubility');
+% Customize the plot appearance
+xlim([273.15, 343.15]);
+xlabel('Temperature (K)');
+ylabel('gamma2(-)');
+title('gamma2 vs. Temperature (NRTL Equation)');
+grid on;
+legend('Location', 'best');
+
+
+% Plotting
+figure;
 plot(T, Xpred, 'b-', 'LineWidth', 1.5, 'DisplayName', 'Predicted Solubility');
 hold on
 scatter(T, Xexp, 'filled', 'MarkerFaceColor', 'r', 'DisplayName', 'Experimental Solubility');
@@ -43,7 +58,7 @@ legend('Location', 'best');
 
 
 % Objective function
-function [SSE, Xpred] = objfun(optimalParams, Xexp, T, Hfus, Tfus, R)
+function [SSE, Xpred, ln_gamma2] = objfun(optimalParams, Xexp, T, Hfus, Tfus, R)
     % Extract parameters from the input vector
     tau12 = optimalParams(1)./(R.*T);
     tau21 = optimalParams(2)./(R.*T);

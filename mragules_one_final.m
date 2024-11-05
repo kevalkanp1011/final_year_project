@@ -25,7 +25,7 @@ a21 = optimalParams;
 fprintf('Regressed parameter a21: %.2f\n', a21);
 
 rp_params = -8030;
-[SSE,Xpred] = objfun(optimalParams, Xexp, T ,R, Hfus, Tfus);
+[SSE,Xpred, ln_gamma2] = objfun(optimalParams, Xexp, T ,R, Hfus, Tfus);
 fprintf('X pred is: %.2f\n', Xpred);
 fprintf('SSE is: %.10f\n', SSE);
 fprintf('S percent is: %.2f\n', calculate_S(Xexp, Xpred));
@@ -35,6 +35,7 @@ T_plot = 273.15:0.1:343.15; % Temperature range in Kelvin
 
 
 % Plotting
+figure;
 plot(T, Xpred, 'b-', 'LineWidth', 1.5, 'DisplayName', 'Predicted Solubility');
 hold on
 scatter(T, Xexp, 'filled', 'MarkerFaceColor', 'r', 'DisplayName', 'Experimental Solubility');
@@ -47,15 +48,29 @@ title('Solubility vs. Temperature (Margules Equation)');
 grid on;
 legend('Location', 'best');
 
+figure;
+plot(T, ln_gamma2, 'b--', 'LineWidth', 1.5, 'DisplayName', 'Predicted Solubility');
+hold on
+scatter(T, ln_gamma2, 'filled', 'MarkerFaceColor', 'r', 'DisplayName', 'Experimental Solubility');
+% Customize the plot appearance
+xlim([273.15, 343.15]);
+xlabel('Temperature (K)');
+ylabel('gamma2(-)');
+title('gamma2 vs. Temperature (Margules Equation)');
+grid on;
+legend('Location', 'best')
 
-function [SSE,x_pred]  = objfun(optimalParams, Xexp, T ,R, Hfus, Tfus)
+
+
+
+function [SSE,x_pred, ln_gamma2]  = objfun(optimalParams, Xexp, T ,R, Hfus, Tfus)
     A21 = optimalParams./(R*T);
 
     % Calculate predicted activity coefficients using Margules equation
-    ln_gamma_pred2 = A21 .* (1-Xexp).^2;
+    ln_gamma2 = A21 .* (1-Xexp).^2;
 
     % Calculate x_pred using SLE equation
-    x_pred = exp(-(Hfus/R) * ((1./T) - (1/Tfus)) - ln_gamma_pred2);
+    x_pred = exp(-(Hfus/R) * ((1./T) - (1/Tfus)) - ln_gamma2);
 
     % Calculate SSE
     SSE = sum((Xexp - x_pred).^2);

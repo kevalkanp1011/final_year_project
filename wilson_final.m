@@ -33,6 +33,7 @@ T_plot = 273.15:0.1:343.15; % Temperature range in Kelvin
 
 
 % Plotting
+figure;
 plot(T, Xpred, 'b-', 'LineWidth', 1.5, 'DisplayName', 'Predicted Solubility');
 hold on
 scatter(T, Xexp, 'filled', 'MarkerFaceColor', 'r', 'DisplayName', 'Experimental Solubility');
@@ -42,6 +43,19 @@ xlim([273.15, 343.15]);
 xlabel('Temperature (K)');
 ylabel('X(Solubility)');
 title('Solubility vs. Temperature (Wilson Equation)');
+grid on;
+legend('Location', 'best');
+
+% Plotting
+figure;
+plot(T, ln_gamma2, 'b--', 'LineWidth', 1.5, 'DisplayName', 'Predicted Solubility');
+hold on
+scatter(T, ln_gamma2, 'filled', 'MarkerFaceColor', 'r', 'DisplayName', 'Experimental Solubility');
+% Customize the plot appearance
+xlim([273.15, 343.15]);
+xlabel('Temperature (K)');
+ylabel('gamma2(-)');
+title('gamma2 vs. Temperature (Wilson Equation)');
 grid on;
 legend('Location', 'best');
 

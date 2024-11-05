@@ -3,6 +3,7 @@ Xexp = [0.334, 0.323, 0.337, 0.350, 0.365]; % Row vector
 T = 273.15 + [47.7, 43.7, 48.4, 52.4, 57.4]; % Convert to Kelvin
 
 Hfus =  25.4 * 1000;
+Tfus =  158.7 + 273.15; % [K]
 % Constants
 R = 8.314; % Gas constant in J/(mol*K)
 
@@ -48,6 +49,16 @@ title('Solubility vs. Temperature (Vanthoff)');
 grid on;
 legend('Location', 'best');
 
+deltaHdiss = optimalParams(1); 
+T0 = optimalParams(2); % Calculations for the plot 
+deltaHdiss_over_Hfus = deltaHdiss / Hfus; 
+T0_over_Tm = T0 / Tfus;
+
+figure; scatter(T0_over_Tm, deltaHdiss_over_Hfus, 'filled', 'MarkerFaceColor', 'b'); 
+xlabel('T0 / Tm'); 
+ylabel('ΔHdiss / ΔHfus'); 
+title('Plot of ΔHdiss/ΔHfus vs. T0/Tm'); 
+grid on;
 
 function [F, optimalParams, Xpred] = objfun(optimalParams, Xexp, T, R)
 
